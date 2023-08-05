@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3000
-const config ={
+const config = {
     host: 'db',
     user: 'root',
     password: 'root',
@@ -10,25 +10,32 @@ const config ={
 const mysql = require('mysql')
 const connection = mysql.createConnection(config)
 
-const sql = `INSERT INTO people(name) values('Wagner')`
+const sql = `INSERT INTO people(name)
+             values ('Wagner')`
+const selectQuery = `SELECT name
+                     FROM people`;
+var message
 
 connection.query(sql)
 
-const selectQuery = `SELECT name FROM people`;
+connection.query(selectQuery, (error, results) => {
+    console.log("error: ", error)
+    console.log("names: ", results)
 
-var message
-
-connection.query(selectQuery, (error, results, fields) => {
-    const names = results.map((result) => result.name).join(', ');
-    message = `<h1>Full Cycle Rocks!</h1><p>Names: ${names}</p>`;
+    if (results) {
+        const names = results.map((result) => result.name).join(', ')
+        message = `<h1>Full Cycle Rocks!</h1><p>Names: ${names}</p>`
+    } else {
+        message = `<h1>Full Cycle Rocks!</h1>`
+    }
 })
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
     res.send(message)
 })
 
 connection.end()
 
 app.listen(port, () => {
-    console.log('Running on port '+port)
+    console.log('Running on port ' + port)
 })
