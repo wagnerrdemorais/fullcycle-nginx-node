@@ -8,6 +8,8 @@ services:
       context: ./app
     image: wagnerrdemorais/app
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh node index.js
+    volumes:
+      - ./app:/usr/src/app
     networks:
       - node-network
     tty: true
